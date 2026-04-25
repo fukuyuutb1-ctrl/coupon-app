@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>クーポンアプリ</title>
+
+<style>
+body {
+  font-family: sans-serif;
+  margin: 0;
+  background: #f0f0f0;
+  text-align: center;
+}
+
+/* 画面 */
+.screen {
+  display: none;
+  padding: 20px;
+}
+
+.active {
+  display: block;
+}
+
+/* アイコン */
+.icon {
+  width: 100px;
+  height: 100px;
+  background: #ff7f7f;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  margin: 100px auto;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* クーポン一覧 */
+.coupon-list button {
+  display: block;
+  width: 80%;
+  margin: 10px auto;
+  padding: 15px;
+  font-size: 16px;
+}
+
+/* クーポン詳細 */
+.coupon-box {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.used {
+  color: red;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ホーム画面 -->
+<div id="home" class="screen active">
+  <div class="icon" onclick="show('list')">
+    クーポン
+  </div>
+</div>
+
+<!-- クーポン一覧 -->
+<div id="list" class="screen">
+  <h2>クーポン一覧</h2>
+  <div class="coupon-list">
+    <button onclick="openCoupon('massage')">マッサージ券</button>
+    <button onclick="openCoupon('lunch')">ランチ奢る券</button>
+    <button onclick="openCoupon('drive')">ドライブ券</button>
+  </div>
+  <button onclick="show('home')">戻る</button>
+</div>
+
+<!-- クーポン詳細 -->
+<div id="coupon" class="screen">
+  <div class="coupon-box">
+    <h2 id="title"></h2>
+    <p id="deadline"></p>
+    <p id="status"></p>
+    <button id="useBtn" onclick="useCoupon()">使用する</button>
+  </div>
+  <button onclick="show('list')">戻る</button>
+</div>
+
+<script>
+let current = "";
+
+// 画面切り替え
+function show(id) {
+  document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+// クーポン開く
+function openCoupon(type) {
+  current = type;
+
+  let titles = {
+    massage: "マッサージ券",
+    lunch: "ランチ奢る券",
+    drive: "ドライブ券"
+  };
+
+  document.getElementById("title").innerText = titles[type];
+  document.getElementById("deadline").innerText = "有効期限：2026年12月31日";
+
+  let used = localStorage.getItem(type);
+
+  if (used === "true") {
+    document.getElementById("status").innerHTML = "<span class='used'>使用済み</span>";
+    document.getElementById("useBtn").style.display = "none";
+  } else {
+    document.getElementById("status").innerText = "未使用";
+    document.getElementById("useBtn").style.display = "inline-block";
+  }
+
+  show("coupon");
+}
+
+// 使用ボタン
+function useCoupon() {
+  localStorage.setItem(current, "true");
+  openCoupon(current);
+}
+</script>
+
+</body>
+</html>
